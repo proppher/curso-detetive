@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Compra - Curso Hacking King</title>
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --darker-bg: #0a0a0a;
+            --primary: #ffc107;
+            --primary-dark: #ffab00;
+            --text: #e0e0e0;
+            --text-secondary: #9e9e9e;
+            --error: #ff5252;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        /* Animações de fundo */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 193, 7, 0.1);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .circle:nth-child(1) {
+            width: 150px;
+            height: 150px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+        
+        .circle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        .circle:nth-child(4) {
+            width: 180px;
+            height: 180px;
+            top: 30%;
+            left: 70%;
+            animation-delay: 6s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px);
+            }
+            50% {
+                transform: translateY(10px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-10px) translateX(20px);
+            }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--darker-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 193, 7, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .course-info {
+            background-color: rgba(255, 193, 7, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .course-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .price span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            margin-right: 0.5rem;
+        }
+        
+        .course-description {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .course-features {
+            list-style-type: none;
+            margin: 1rem 0;
+        }
+        
+        .course-features li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .course-features li:before {
+            content: "✓";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.2);
+        }
+        
+        .input-error {
+            border-color: var(--error) !important;
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .payment-methods {
+            margin: 2rem 0;
+        }
+        
+        .payment-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+        
+        .payment-tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .payment-tab:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .payment-content {
+            display: none;
+        }
+        
+        .payment-content.active {
+            display: block;
+        }
+        
+        .pix-section {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: rgba(255, 193, 7, 0.05);
+            border-radius: 8px;
+            border: 1px dashed rgba(255, 193, 7, 0.3);
+        }
+        
+        .pix-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .pix-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .pix-benefits {
+            list-style-type: none;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .pix-benefits li {
+            margin-bottom: 0.3rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .pix-benefits li:before {
+            content: "•";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background-color: var(--darker-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            position: relative;
+            animation: slideUp 0.4s ease;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 1rem auto;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #000;
+            font-weight: bold;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .pix-copy {
+            margin-top: 1rem;
+            background-color: rgba(255, 193, 7, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            word-break: break-all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .pix-copy:hover {
+            background-color: rgba(255, 193, 7, 0.2);
+        }
+        
+        .pix-copy-text {
+            font-size: 0.9rem;
+        }
+        
+        .copy-btn {
+            margin-top: 1rem;
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            padding: 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .loading {
+            display: none;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 193, 7, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        .loading-text {
+            margin-top: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            display: none;
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 1rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .terms {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .terms a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .terms a:hover {
+            text-decoration: underline;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .payment-tabs {
+                flex-direction: column;
+            }
+            
+            .payment-tab {
+                border-bottom: none;
+                border-left: 2px solid transparent;
+            }
+            
+            .payment-tab.active {
+                border-bottom: none;
+                border-left: 2px solid var(--primary);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animações de fundo -->
+    <div class="bg-animation">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    
+    <div class="container">
+        <h1>KIT BASICO - FINALIZAR COMPRA</h1>
+       <center>    <img src="mrs_curso_de_detetive.png" alt="MRS Curso de Detetive" class="logo"> </center>
+        <!-- Informações do curso -->
+        <div class="course-info">
+            <h2 class="course-title">Curso de detetive - basico</h2>
+            <p class="course-description">Domine as técnicas mais avançadas de investigaçao com nosso curso completo.</p>
+            
+            <div class="price">
+                 R$ 145,00
+            </div>
+            <img src="1.png" width="110" height="110" alt="MRS Curso de Detetive" class="logo">
+            
+            <ul class="course-features">
+                 <li>3 Carteiras impressas</li>
+                <li>Porta fucional basico</li>
+                <li>Acesso vitalício a todas as aulas e atualizações</li>
+                <li>Mais de 50 horas de conteúdo</li>
+                <li>Certificado de conclusão reconhecido</li>
+                <li>Suporte exclusivo para alunos</li>
+                <li>Materiais complementares e ferramentas</li>
+                <li>Acesso à comunidade privada de detetives</li>
+            </ul>
+        </div>
+        
+        <!-- Formulário de dados pessoais -->
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="Digite seu e-mail" required>
+                <div class="error-message" id="email-error">Por favor, insira um e-mail válido</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp</label>
+                <input type="tel" id="whatsapp" placeholder="(99) 99999-9999" required>
+                <div class="error-message" id="whatsapp-error">Número inválido (DDD + 9 dígitos)</div>
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="address">Endereço (Rua/Avenida)</label>
+                <input type="text" id="address" placeholder="Nome da rua ou avenida" required>
+                <div class="error-message" id="address-error">Por favor, insira seu endereço</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="number">Número</label>
+                <input type="text" id="number" placeholder="Número" required>
+                <div class="error-message" id="number-error">Por favor, insira o número</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="complement">Complemento</label>
+                <input type="text" id="complement" placeholder="Apto, casa, etc.">
+            </div>
+            
+            <div class="form-group">
+                <label for="neighborhood">Bairro</label>
+                <input type="text" id="neighborhood" placeholder="Seu bairro" required>
+                <div class="error-message" id="neighborhood-error">Por favor, insira seu bairro</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="city">Cidade</label>
+                <input type="text" id="city" placeholder="Sua cidade" required>
+                <div class="error-message" id="city-error">Por favor, insira sua cidade</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="state">Estado</label>
+                <select id="state" required>
+                    <option value="">Selecione</option>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                </select>
+                <div class="error-message" id="state-error">Por favor, selecione seu estado</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="cep">CEP</label>
+                <input type="text" id="cep" placeholder="00000-000" required>
+                <div class="error-message" id="cep-error">CEP inválido</div>
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="reference">Ponto de Referência</label>
+                <input type="text" id="reference" placeholder="Ex: Próximo ao mercado X, ao lado do posto Y">
+            </div>
+        </div>
+        
+        <!-- Métodos de pagamento -->
+        <div class="payment-methods">
+            <h3 style="margin-bottom: 1rem;">Método de Pagamento</h3>
+            
+            <div class="payment-tabs">
+                <div class="payment-tab active" data-tab="pix">PIX</div>
+                <div class="payment-tab" data-tab="credit-card">Cartão de Crédito</div>
+                <div class="payment-tab" data-tab="boleto">Boleto</div>
+            </div>
+            
+            <div class="payment-content active" id="pix-content">
+                <div class="pix-section">
+                     <img src="https://images.seeklogo.com/logo-png/50/3/pix-banco-central-brasil-logo-png_seeklogo-500502.png" width="110" height="110" alt="MRS Curso de Detetive" class="logo">
+                    <h2 class="pix-title">Pague com PIX</h2>
+                    <p>Pagamento instantâneo e seguro</p>
+            
+
+
+
+                    <ul class="pix-benefits">
+                        <li>Pagamento instantâneo</li>
+                        <li>Sem taxas adicionais</li>
+                        <li>Desconto de 5%</li>
+                    </ul>
+                    
+                    <button class="btn" id="generate-pix">Gerar QR Code PIX</button>
+                </div>
+            </div>
+            
+            <div class="payment-content" id="credit-card-content">
+                <p style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    Pagamento por cartão de crédito indisponível no momento. Por favor, escolha PIX ou Boleto.
+                </p>
+            </div>
+            
+            <div class="payment-content" id="boleto-content">
+                <p style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    Pagamento por boleto indisponível no momento. Por favor, escolha PIX.
+                </p>
+            </div>
+        </div>
+        
+        <div class="terms">
+            Ao finalizar sua compra, você concorda com nossos <a href="#">Termos de Serviço</a> e <a href="#">Política de Privacidade</a>.
+            <br>
+            Garantia de 7 dias ou seu dinheiro de volta.
+        </div>
+    </div>
+    
+    <!-- Modal PIX -->
+    <div class="modal" id="pix-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <div class="pix-icon">PIX</div>
+            <h2 class="pix-title">Pagamento via PIX</h2>
+            <p>Escaneie o QR Code ou copie o código abaixo</p>
+            
+            <div class="qr-code" id="qr-code">
+                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020101021126580014br.gov.bcb.pix013622370a2a-15b2-4b4e-822f-21aa87d7f37e5204000053039865406145.005802BR5924ivanilda santos de jesus6009SAO PAULO622905251JZBXJ00D0GD12H4EKAW26DDC6304B33A" alt="QR Code PIX">
+            </div>
+            
+            <div class="pix-copy" id="pix-code">
+                <span class="pix-copy-text">00020101021126580014br.gov.bcb.pix013622370a2a-15b2-4b4e-822f-21aa87d7f37e5204000053039865406145.005802BR5924ivanilda santos de jesus6009SAO PAULO622905251JZBXJ00D0GD12H4EKAW26DDC6304B33A</span>
+            </div>
+            
+            <button class="copy-btn" id="copy-pix">Copiar Chave PIX</button>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Aguardando confirmação...</p>
+            </div>
+            
+            <div class="success-message" id="success-message">
+                Chave PIX copiada com sucesso!
+            </div>
+            
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary);">
+                Após o pagamento, envie o comprovante para nosso WhatsApp.
+            </p>
+            
+            <div style="margin-top: 1.5rem; padding: 1rem; background-color: rgba(255, 193, 7, 0.05); border-radius: 8px;">
+                <h3 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--primary);">Valor do Pagamento</h3>
+                <p style="font-size: 1.2rem; font-weight: bold;">R$ 145,00</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos do modal
+            const generatePixBtn = document.getElementById('generate-pix');
+            const pixModal = document.getElementById('pix-modal');
+            const closeModal = document.getElementById('close-modal');
+            const copyPixBtn = document.getElementById('copy-pix');
+            const pixCode = document.getElementById('pix-code');
+            const loading = document.getElementById('loading');
+            const successMessage = document.getElementById('success-message');
+            
+            // Tabs de pagamento
+            const paymentTabs = document.querySelectorAll('.payment-tab');
+            const paymentContents = document.querySelectorAll('.payment-content');
+            
+            // Máscara para WhatsApp
+            const whatsappInput = document.getElementById('whatsapp');
+            whatsappInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.substring(0, 11);
+                
+                if (value.length > 0) {
+                    value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+                    if (value.length > 10) {
+                        value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+                    }
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Máscara para CEP
+            const cepInput = document.getElementById('cep');
+            cepInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 8) value = value.substring(0, 8);
+                
+                if (value.length > 5) {
+                    value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Abrir modal ao clicar no botão Gerar PIX
+            generatePixBtn.addEventListener('click', function() {
+                // Validar campos antes de abrir o modal
+                if (validateForm()) {
+                    pixModal.style.display = 'flex';
+                }
+            });
+            
+            // Fechar modal
+            closeModal.addEventListener('click', function() {
+                closePixModal();
+            });
+            
+            // Copiar chave PIX
+            copyPixBtn.addEventListener('click', function() {
+                const textToCopy = '00020101021126580014br.gov.bcb.pix013622370a2a-15b2-4b4e-822f-21aa87d7f37e5204000053039865406145.005802BR5924ivanilda santos de jesus6009SAO PAULO622905251JZBXJ00D0GD12H4EKAW26DDC6304B33A';
+                
+                // Criar elemento temporário para copiar
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                // Mostrar animação de carregamento
+                loading.style.display = 'block';
+                copyPixBtn.disabled = true;
+                
+                // Simular espera pela confirmação (3 segundos)
+                setTimeout(function() {
+                    loading.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    copyPixBtn.disabled = false;
+                    
+                    // Esconder mensagem após 3 segundos
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 10000);
+                }, 10000);
+            });
+            
+            // Fechar modal ao clicar fora do conteúdo
+            window.addEventListener('click', function(event) {
+                if (event.target === pixModal) {
+                    closePixModal();
+                }
+            });
+            
+            // Trocar abas de pagamento
+            paymentTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Ativar aba clicada
+                    paymentTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Mostrar conteúdo correspondente
+                    paymentContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-content`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Função para fechar modal PIX
+            function closePixModal() {
+                pixModal.style.display = 'none';
+                loading.style.display = 'none';
+                successMessage.style.display = 'none';
+            }
+            
+            // Função para validar o formulário
+            function validateForm() {
+                const requiredFields = [
+                    {id: 'email', validator: validateEmail},
+                    {id: 'whatsapp', validator: validateWhatsapp},
+                    {id: 'address', validator: validateNotEmpty},
+                    {id: 'number', validator: validateNotEmpty},
+                    {id: 'neighborhood', validator: validateNotEmpty},
+                    {id: 'city', validator: validateNotEmpty},
+                    {id: 'state', validator: validateState},
+                    {id: 'cep', validator: validateCEP}
+                ];
+                
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field.id);
+                    const errorElement = document.getElementById(`${field.id}-error`);
+                    
+                    if (!field.validator(element.value)) {
+                        element.classList.add('input-error');
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                        
+                        // Rolando até o primeiro erro
+                        if (isValid === false) {
+                            element.scrollIntoView({behavior: 'smooth', block: 'center'});
+                            isValid = null; // Para não repetir o scroll
+                        }
+                    } else {
+                        element.classList.remove('input-error');
+                        errorElement.style.display = 'none';
+                    }
+                });
+                
+                if (!isValid) {
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // Funções de validação
+            function validateEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+            
+            function validateWhatsapp(whatsapp) {
+                return whatsapp.replace(/\D/g, '').length === 11;
+            }
+            
+            function validateNotEmpty(value) {
+                return value.trim().length > 0;
+            }
+            
+            function validateState(state) {
+                return state !== '';
+            }
+            
+            function validateCEP(cep) {
+                return cep.replace(/\D/g, '').length === 8;
+            }
+        });
+    </script>
+
+     <img src="https://maquinetavirtual.com.br/img/footer/selo_site_seguro.png" width="100" height="80" alt="MRS Curso de Detetive" class="logo">
+</body>
+</html>
